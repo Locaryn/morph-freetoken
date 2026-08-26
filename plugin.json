@@ -1,13 +1,13 @@
 {
   "$schema": "https://locaryn.dev/schema/plugin.json/v0.1",
   "apiVersion": "0.1",
-  "name": "extension-freetoken",
+  "name": "morph-freetoken",
   "version": "1.0.0",
   "description": "Moteur d'inférence FreeToken : sert localement des modèles Mixture-of-Experts de grande taille en répartissant les experts entre la mémoire système et le GPU.",
   "author": "Locaryn Team",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/Locaryn/extension-freetoken",
-  "repository": "https://github.com/Locaryn/extension-freetoken",
+  "homepage": "https://github.com/Locaryn/morph-freetoken",
+  "repository": "https://github.com/Locaryn/morph-freetoken",
   "keywords": [
     "inference-engine",
     "mixture-of-experts",
