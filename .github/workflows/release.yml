@@ -1,0 +1,165 @@
+name: Release Extension
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # Une extension qui ne compile pas ne doit pas partir en release : un paquet
+  # qui n'embarque que des sources s'installe, s'affiche, et ne fait rien.
+  check:
+    name: Vérifier la compilation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@1.88
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --all-targets --locked -- -D warnings
+      - run: cargo test --all-targets --locked
+
+      # Le catalogue part tel quel chez l'utilisateur, et chaque adresse doit
+      # répondre : un dépôt privé ou sous licence à accepter répond 401, et
+      # l'installation échoue chez lui, pas ici. Dix lignes de CI, une version
+      # installable en moins qui ne télécharge rien.
+      - name: Vérifier le catalogue
+        run: node scripts/check-catalogue.mjs --online
+
+      # La version du manifeste fait foi : une archive nommée d'après un tag
+      # qui ne correspond pas au manifeste rend tout rapport de bug ambigu.
+      - name: Le tag et le manifeste doivent concorder
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          set -euo pipefail
+          VERSION="$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' plugin.json | head -n 1)"
+          test "v$VERSION" = "${GITHUB_REF_NAME}" \
+            || { echo "::error::plugin.json dit $VERSION, le tag dit ${GITHUB_REF_NAME}"; exit 1; }
+
+  bundle:
+    name: Bundle ${{ matrix.label }}
+    needs: check
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      # Deux plateformes, pas quatre : le moteur n'existe que sous Linux, et
+      # sous Windows il tourne dans WSL2. Publier pour macOS livrerait un
+      # paquet qui s'installe et refuse de démarrer.
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            label: linux-x86_64
+            ext: ""
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            label: windows-x86_64
+            ext: ".exe"
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: dtolnay/rust-toolchain@1.88
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - name: Compiler le lanceur et le serveur MCP
+        run: >
+          cargo build --release --locked --target ${{ matrix.target }}
+          --bin locaryn-freetoken-launch --bin locaryn-freetoken-mcp
+
+      # Le paquet ne contient que ce qui tourne chez l'utilisateur : le
+      # manifeste, la compétence, le catalogue, la configuration MCP et les
+      # deux exécutables. Les sources restent sur le dépôt.
+      - name: Assembler le paquet
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf bundle
+          mkdir -p bundle/bin
+          cp plugin.json SKILL.md README.md LICENSE bundle/
+          cp -r dist mcp bundle/
+          for exe in locaryn-freetoken-launch locaryn-freetoken-mcp; do
+            cp "target/${{ matrix.target }}/release/${exe}${{ matrix.ext }}" bundle/bin/
+            test -f "bundle/bin/${exe}${{ matrix.ext }}"
+          done
+          test -f bundle/plugin.json
+          test -f bundle/dist/marketplace.json
+          test -f bundle/mcp/mcp.json
+
+      # Les artefacts ne conservent pas le bit exécutable ; le job de release
+      # le repose avant d'archiver, sinon les programmes livrés ne démarrent
+      # pas sous Linux.
+      - uses: actions/upload-artifact@v7
+        with:
+          name: bundle-${{ matrix.label }}
+          path: bundle
+          if-no-files-found: error
+
+  release:
+    name: Publier la release
+    needs: bundle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          path: dl
+          pattern: bundle-*
+
+      - name: Archiver chaque plateforme
+        run: |
+          set -euo pipefail
+          VERSION="$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' plugin.json | head -n 1)"
+          test -n "$VERSION"
+          mkdir -p out
+          for dir in dl/bundle-*; do
+            label="${dir#dl/bundle-}"
+            chmod +x "$dir"/bin/* || true
+            ( cd "$dir" && zip -r -q "$GITHUB_WORKSPACE/out/plugin-freetoken-v${VERSION}-${label}.zip" . )
+          done
+          ls -l out
+
+      # Vérifier `bin/` dans l'archive avant de publier : c'est la ligne de CI
+      # qui épargne une version installable mais inerte.
+      - name: Vérifier les archives
+        run: |
+          set -euo pipefail
+          test "$(ls out/*.zip | wc -l)" -eq 2
+          for archive in out/*.zip; do
+            for attendu in plugin.json dist/marketplace.json mcp/mcp.json SKILL.md; do
+              unzip -l "$archive" | grep -q "$attendu" \
+                || { echo "::error::$archive : $attendu manquant"; exit 1; }
+            done
+            unzip -l "$archive" | grep -Eq "bin/locaryn-freetoken-launch(\.exe)?$" \
+              || { echo "::error::$archive ne contient pas le lanceur"; exit 1; }
+            unzip -l "$archive" | grep -Eq "bin/locaryn-freetoken-mcp(\.exe)?$" \
+              || { echo "::error::$archive ne contient pas le serveur MCP"; exit 1; }
+          done
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: plugin-freetoken-archives
+          path: out/*.zip
+          if-no-files-found: error
+
+      - uses: softprops/action-gh-release@v3
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          draft: false
+          name: "plugin-freetoken ${{ github.ref_name }}"
+          files: out/*.zip
+          generate_release_notes: true
+          fail_on_unmatched_files: true

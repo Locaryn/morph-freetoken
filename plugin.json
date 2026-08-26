@@ -1,0 +1,164 @@
+{
+  "$schema": "https://locaryn.dev/schema/plugin.json/v0.1",
+  "apiVersion": "0.1",
+  "name": "plugin-freetoken",
+  "version": "1.0.0",
+  "description": "Moteur d'inférence FreeToken : sert localement des modèles Mixture-of-Experts de grande taille en répartissant les experts entre la mémoire système et le GPU.",
+  "author": "Locaryn Team",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/Locaryn/plugin-freetoken",
+  "repository": "https://github.com/Locaryn/plugin-freetoken",
+  "keywords": [
+    "inference-engine",
+    "mixture-of-experts",
+    "moe",
+    "freetoken",
+    "safetensors",
+    "cuda"
+  ],
+  "permissions": {
+    "mcp": {
+      "reason": "Fournir les outils qui installent le moteur, lisent son état et redimensionnent ses caches."
+    },
+    "shell": {
+      "reason": "Installer le paquet Python du moteur et lancer son serveur — sous Windows, à travers WSL.",
+      "scope": "always"
+    },
+    "network": {
+      "reason": "Télécharger le paquet du moteur depuis PyPI, et les poids depuis Hugging Face quand un modèle est nommé par son dépôt.",
+      "requireApproval": true
+    },
+    "files.read": {
+      "reason": "Lire les checkpoints de la bibliothèque de poids et les profils de bande passante mesurés."
+    },
+    "files.write": {
+      "reason": "Écrire l'environnement Python du moteur, les checkpoints convertis et les profils de mesure dans le dossier de l'extension."
+    }
+  },
+  "components": {
+    "skills": ["SKILL.md"],
+    "mcp": "mcp/mcp.json"
+  },
+  "capabilities": ["inference-engine"],
+  "engine": {
+    "id": "freetoken",
+    "label": "FreeToken (Mixture-of-Experts)",
+    "driver": "openai_compat",
+    "api_url": "http://127.0.0.1:1919",
+    "port": 1919,
+    "install": {
+      "kind": "pip",
+      "package": "freetoken",
+      "version": "0.1.2",
+      "extras": ["accel"],
+      "probe_bin": "ft"
+    },
+    "lifecycle": {
+      "start": [
+        "{{plugin_bin_dir}}/locaryn-freetoken-launch",
+        "serve",
+        "--port",
+        "{{port}}",
+        "--model",
+        "{{model_path}}"
+      ],
+      "env": {
+        "FREETOKEN_LOCARYN_ENDPOINT": "{{endpoint}}",
+        "HF_HOME": "{{hf_cache_dir}}",
+        "TMPDIR": "{{temp_dir}}"
+      },
+      "health": {
+        "method": "GET",
+        "url": "{{endpoint}}/health",
+        "retries": 180,
+        "interval_ms": 5000
+      },
+      "requires_model": true
+    },
+    "model_formats": {
+      "directories": true,
+      "directory_markers": ["config.json", "freetoken_weight.json"],
+      "hf_repo_ids": true,
+      "files": []
+    },
+    "startup_timeout_secs": 1800,
+    "requires": {
+      "os": ["linux", "windows"],
+      "gpu": "nvidia",
+      "min_ram_gb": 32,
+      "note": "Le moteur tourne sous Linux x86_64 avec un GPU NVIDIA, pilote r580+ et CUDA 13. Sous Windows il passe par WSL2 : installez une distribution et le toolkit CUDA à l'intérieur, puis utilisez l'outil « freetoken_status » pour vérifier ce qui manque."
+    }
+  },
+  "ui_contributions": {
+    "slots": [
+      {
+        "id": "freetoken-catalog",
+        "slot": "marketplace.catalogs",
+        "order": 20,
+        "type": "data",
+        "label": "Modèles Mixture-of-Experts",
+        "icon": "cpu",
+        "entry": "dist/marketplace.json",
+        "hint": "Ajoute le filtre « Mixture-of-Experts » et ses checkpoints au catalogue"
+      },
+      {
+        "id": "freetoken-runtime-card",
+        "slot": "engines.runtimes",
+        "order": 20,
+        "type": "action",
+        "label": "FreeToken (Mixture-of-Experts)",
+        "icon": "cpu",
+        "category": "Inférence de très grands modèles MoE",
+        "value": "ft serve (CUDA 13, experts en mémoire système)",
+        "hint": "Répartition adaptative des experts entre le processeur et le GPU, cache d'experts LRU, réutilisation de préfixe."
+      }
+    ],
+    "settings_sections": [
+      {
+        "id": "freetoken",
+        "label": "Moteur FreeToken",
+        "fields": [
+          {
+            "id": "moe_backend",
+            "type": "select",
+            "label": "Répartition des experts",
+            "options": ["auto", "offload", "hybrid", "cpu", "fused"],
+            "default": "auto",
+            "hint": "auto suit le profil mesuré par « freetoken_bench_bandwidth ». offload garde les experts en mémoire système, cpu les calcule sur le processeur, fused exige de les faire tenir en VRAM."
+          },
+          {
+            "id": "memory_ratio",
+            "type": "number",
+            "label": "Part de la VRAM libre utilisable",
+            "default": "0.9",
+            "hint": "Entre 0,1 et 0,95. Descendez si un autre programme partage la carte."
+          },
+          {
+            "id": "max_output_tokens",
+            "type": "number",
+            "label": "Jetons de sortie par défaut",
+            "default": "32768"
+          },
+          {
+            "id": "gpu",
+            "type": "string",
+            "label": "GPU",
+            "hint": "Index ou UUID de « nvidia-smi ». Vide : la première carte."
+          },
+          {
+            "id": "wsl_distro",
+            "type": "string",
+            "label": "Distribution WSL (Windows)",
+            "hint": "Vide : la distribution par défaut. Sans effet sous Linux."
+          },
+          {
+            "id": "extra_args",
+            "type": "string",
+            "label": "Arguments supplémentaires",
+            "hint": "Ajoutés tels quels à « ft serve ». Séparés par des espaces."
+          }
+        ]
+      }
+    ]
+  }
+}

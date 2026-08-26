@@ -1,0 +1,31 @@
+[package]
+name = "locaryn-plugin-freetoken"
+version = "1.0.0"
+edition = "2021"
+description = "Official Locaryn Extension: FreeToken Mixture-of-Experts inference engine (CPU-GPU expert offload, CUDA 13)"
+license = "Apache-2.0"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "locaryn-freetoken-mcp"
+path = "src/bin/freetoken_mcp.rs"
+
+# Le programme que le socle nomme dans `engine.lifecycle.start`. C'est lui qui
+# sait que le moteur n'existe que sous Linux et passe par WSL2 sous Windows —
+# le socle, lui, ne connaît qu'une liste d'arguments.
+[[bin]]
+name = "locaryn-freetoken-launch"
+path = "src/bin/freetoken_launch.rs"
+
+[dependencies]
+# Le serveur du moteur n'écoute que sur la boucle locale, en HTTP : aucune
+# pile TLS n'est nécessaire. L'omettre retire `ring` des dépendances — donc un
+# binaire plus petit, et une compilation croisée qui n'exige pas de compilateur C.
+reqwest = { version = "0.12", default-features = false, features = ["json"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+
+[workspace]

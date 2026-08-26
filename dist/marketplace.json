@@ -1,0 +1,280 @@
+{
+  "schemaVersion": 1,
+  "refreshUrl": "https://raw.githubusercontent.com/Locaryn/plugin-freetoken/main/dist/marketplace.json",
+  "owns": [
+    "deepseek-v4",
+    "glm-5.2",
+    "glm-4.7",
+    "qwen3.6-35b-a3b",
+    "qwen3.5-35b-a3b",
+    "qwen3.6-27b",
+    "qwen3-30b-a3b",
+    "gpt-oss-120b",
+    "gpt-oss-20b",
+    "gemma-4-26b-a4b",
+    "gemma-4-12b",
+    "minimax-m2.5",
+    "muse-glimmer",
+    "freetoken_weight.json"
+  ],
+  "categories": [
+    {
+      "id": "mixture-of-experts",
+      "label": "Mixture-of-Experts",
+      "icon": "cpu",
+      "matches": ["inference-engine"],
+      "requires": ["inference-engine"]
+    }
+  ],
+  "models": [
+    {
+      "id": "qwen3.6-35b-a3b-nvfp4",
+      "name": "Qwen3.6 35B-A3B (NVFP4)",
+      "brand": "NVIDIA · Qwen",
+      "description": "Le point d'entrée raisonnable : 35 milliards de paramètres dont 3 actifs par jeton, quantifiés en NVFP4. Le plus petit téléchargement de cette catégorie, et celui qui tient dans le moins de mémoire système.",
+      "license": "Apache-2.0",
+      "releaseDate": "2026-05-27",
+      "releaseYear": 2026,
+      "capabilities": ["inference-engine"],
+      "variants": [
+        {
+          "size": "NVFP4 · 35B-A3B",
+          "params": 35,
+          "storageGb": 23.4,
+          "quants": ["nvfp4"],
+          "tag": "https://huggingface.co/nvidia/Qwen3.6-35B-A3B-NVFP4"
+        }
+      ]
+    },
+    {
+      "id": "qwen3.6-35b-a3b",
+      "name": "Qwen3.6 35B-A3B",
+      "brand": "Qwen",
+      "description": "La version pleine précision du même modèle, et sa variante FP8. Meilleure qualité que le NVFP4, au prix du double ou du triple de mémoire système.",
+      "license": "Apache-2.0",
+      "releaseDate": "2026-04-15",
+      "releaseYear": 2026,
+      "capabilities": ["inference-engine"],
+      "variants": [
+        {
+          "size": "FP8 · 35B-A3B",
+          "params": 35,
+          "storageGb": 37.5,
+          "quants": ["fp8"],
+          "tag": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B-FP8"
+        },
+        {
+          "size": "BF16 · 35B-A3B",
+          "params": 35,
+          "storageGb": 71.9,
+          "quants": ["bf16"],
+          "tag": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B"
+        }
+      ]
+    },
+    {
+      "id": "qwen3.5-35b-a3b",
+      "name": "Qwen3.5 35B-A3B",
+      "brand": "Qwen",
+      "description": "La génération précédente du 35B-A3B, toujours servie par le moteur. Utile pour comparer, ou quand un réglage a été mis au point dessus.",
+      "license": "Apache-2.0",
+      "releaseDate": "2026-02-24",
+      "releaseYear": 2026,
+      "capabilities": ["inference-engine"],
+      "variants": [
+        {
+          "size": "BF16 · 35B-A3B",
+          "params": 35,
+          "storageGb": 71.9,
+          "quants": ["bf16"],
+          "tag": "https://huggingface.co/Qwen/Qwen3.5-35B-A3B"
+        }
+      ]
+    },
+    {
+      "id": "qwen3-30b-a3b",
+      "name": "Qwen3 30B-A3B",
+      "brand": "Qwen",
+      "description": "Le Mixture-of-Experts de Qwen le plus répandu, et celui sur lequel le plus de réglages ont été publiés. Bon choix pour un premier essai du moteur.",
+      "license": "Apache-2.0",
+      "releaseDate": "2025-04-27",
+      "releaseYear": 2025,
+      "capabilities": ["inference-engine"],
+      "variants": [
+        {
+          "size": "BF16 · 30B-A3B",
+          "params": 30,
+          "storageGb": 61.1,
+          "quants": ["bf16"],
+          "tag": "https://huggingface.co/Qwen/Qwen3-30B-A3B"
+        }
+      ]
+    },
+    {
+      "id": "gpt-oss-20b",
+      "name": "gpt-oss 20B",
+      "brand": "OpenAI",
+      "description": "Mixture-of-Experts en MXFP4, taillé pour tenir sur une machine unique. Le plus léger de la sélection, et celui qui demande le moins de mémoire système.",
+      "license": "Apache-2.0",
+      "releaseDate": "2025-08-04",
+      "releaseYear": 2025,
+      "capabilities": ["inference-engine"],
+      "variants": [
+        {
+          "size": "MXFP4 · 20B",
+          "params": 21,
+          "storageGb": 27.5,
+          "quants": ["mxfp4"],
+          "tag": "https://huggingface.co/openai/gpt-oss-20b"
+        }
+      ]
+    },
+    {
+      "id": "gpt-oss-120b",
+      "name": "gpt-oss 120B",
+      "brand": "OpenAI",
+      "description": "Le grand frère : 117 milliards de paramètres en MXFP4. Comptez au moins 160 Go de mémoire système pour héberger ses experts.",
+      "license": "Apache-2.0",
+      "releaseDate": "2025-08-04",
+      "releaseYear": 2025,
+      "capabilities": ["inference-engine"],
+      "variants": [
+        {
+          "size": "MXFP4 · 117B",
+          "params": 117,
+          "storageGb": 130.5,
+          "quants": ["mxfp4"],
+          "tag": "https://huggingface.co/openai/gpt-oss-120b"
+        }
+      ]
+    },
+    {
+      "id": "gemma-4-26b-a4b",
+      "name": "Gemma 4 26B-A4B",
+      "brand": "Google · NVIDIA",
+      "description": "Mixture-of-Experts de Google, 26 milliards de paramètres dont 4 actifs. La variante NVFP4 de NVIDIA tient dans moins de 20 Go. Servi en texte seulement.",
+      "license": "Apache-2.0",
+      "releaseDate": "2026-05-01",
+      "releaseYear": 2026,
+      "capabilities": ["inference-engine"],
+      "variants": [
+        {
+          "size": "NVFP4 · 26B-A4B",
+          "params": 26,
+          "storageGb": 18.8,
+          "quants": ["nvfp4"],
+          "tag": "https://huggingface.co/nvidia/Gemma-4-26B-A4B-NVFP4"
+        },
+        {
+          "size": "BF16 · 26B-A4B",
+          "params": 26,
+          "storageGb": 51.6,
+          "quants": ["bf16"],
+          "tag": "https://huggingface.co/google/gemma-4-26B-A4B-it"
+        }
+      ]
+    },
+    {
+      "id": "muse-glimmer-30b",
+      "name": "Muse-Glimmer 30B",
+      "brand": "Meta · Red Hat AI",
+      "description": "Mixture-of-Experts de 30 milliards de paramètres, avec sa quantification NVFP4 par Red Hat AI qui descend sous 24 Go.",
+      "license": "Apache-2.0",
+      "releaseDate": "2026-08-09",
+      "releaseYear": 2026,
+      "capabilities": ["inference-engine"],
+      "variants": [
+        {
+          "size": "NVFP4 · 30B",
+          "params": 30,
+          "storageGb": 23.4,
+          "quants": ["nvfp4"],
+          "tag": "https://huggingface.co/RedHatAI/Muse-Glimmer-30B-NVFP4"
+        },
+        {
+          "size": "BF16 · 30B",
+          "params": 30,
+          "storageGb": 59.6,
+          "quants": ["bf16"],
+          "tag": "https://huggingface.co/meta-models/Muse-Glimmer-30B"
+        }
+      ]
+    },
+    {
+      "id": "minimax-m2.5",
+      "name": "MiniMax M2.5 (NVFP4)",
+      "brand": "NVIDIA · MiniMax",
+      "description": "116 milliards de paramètres en NVFP4, avec l'attention creuse propre à la famille M. Comptez au moins 160 Go de mémoire système.",
+      "license": "Autre — voir la fiche du dépôt",
+      "releaseDate": "2026-03-11",
+      "releaseYear": 2026,
+      "capabilities": ["inference-engine"],
+      "variants": [
+        {
+          "size": "NVFP4 · 116B",
+          "params": 116,
+          "storageGb": 139.9,
+          "quants": ["nvfp4"],
+          "tag": "https://huggingface.co/nvidia/MiniMax-M2.5-NVFP4"
+        }
+      ]
+    },
+    {
+      "id": "glm-4.7",
+      "name": "GLM 4.7 (NVFP4)",
+      "brand": "NVIDIA · Zhipu",
+      "description": "183 milliards de paramètres en NVFP4. Le moteur sert ce modèle en gardant ses experts en mémoire système : prévoyez 256 Go.",
+      "license": "MIT",
+      "releaseDate": "2026-03-19",
+      "releaseYear": 2026,
+      "capabilities": ["inference-engine"],
+      "variants": [
+        {
+          "size": "NVFP4 · 183B",
+          "params": 183,
+          "storageGb": 229.9,
+          "quants": ["nvfp4"],
+          "tag": "https://huggingface.co/nvidia/GLM-4.7-NVFP4"
+        }
+      ]
+    },
+    {
+      "id": "glm-5.2",
+      "name": "GLM 5.2 (NVFP4)",
+      "brand": "NVIDIA · Zhipu",
+      "description": "381 milliards de paramètres. Le plus gros modèle que ce moteur sait servir sur une machine unique, et celui qui exige le plus de mémoire système — bien au-delà de 256 Go.",
+      "license": "MIT",
+      "releaseDate": "2026-06-22",
+      "releaseYear": 2026,
+      "capabilities": ["inference-engine"],
+      "variants": [
+        {
+          "size": "NVFP4 · 381B",
+          "params": 381,
+          "storageGb": 464.8,
+          "quants": ["nvfp4"],
+          "tag": "https://huggingface.co/nvidia/GLM-5.2-NVFP4"
+        }
+      ]
+    },
+    {
+      "id": "deepseek-v4-flash",
+      "name": "DeepSeek V4 Flash",
+      "brand": "DeepSeek",
+      "description": "304 milliards de paramètres avec l'attention creuse de la V4. Le dépôt doit garder son sous-dossier « inference/config.json » : c'est là que le moteur lit les vrais paramètres du modèle.",
+      "license": "MIT",
+      "releaseDate": "2026-07-31",
+      "releaseYear": 2026,
+      "capabilities": ["inference-engine"],
+      "variants": [
+        {
+          "size": "FP8 · 304B",
+          "params": 304,
+          "storageGb": 166.9,
+          "quants": ["fp8"],
+          "tag": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731"
+        }
+      ]
+    }
+  ]
+}
