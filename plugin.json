@@ -1,13 +1,13 @@
 {
   "$schema": "https://locaryn.dev/schema/plugin.json/v0.1",
   "apiVersion": "0.1",
-  "name": "plugin-freetoken",
+  "name": "extension-freetoken",
   "version": "1.0.0",
   "description": "Moteur d'inférence FreeToken : sert localement des modèles Mixture-of-Experts de grande taille en répartissant les experts entre la mémoire système et le GPU.",
   "author": "Locaryn Team",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/Locaryn/plugin-freetoken",
-  "repository": "https://github.com/Locaryn/plugin-freetoken",
+  "homepage": "https://github.com/Locaryn/extension-freetoken",
+  "repository": "https://github.com/Locaryn/extension-freetoken",
   "keywords": [
     "inference-engine",
     "mixture-of-experts",
@@ -36,10 +36,14 @@
     }
   },
   "components": {
-    "skills": ["SKILL.md"],
+    "skills": [
+      "SKILL.md"
+    ],
     "mcp": "mcp/mcp.json"
   },
-  "capabilities": ["inference-engine"],
+  "capabilities": [
+    "inference-engine"
+  ],
   "engine": {
     "id": "freetoken",
     "label": "FreeToken (Mixture-of-Experts)",
@@ -50,7 +54,9 @@
       "kind": "pip",
       "package": "freetoken",
       "version": "0.1.2",
-      "extras": ["accel"],
+      "extras": [
+        "accel"
+      ],
       "probe_bin": "ft"
     },
     "lifecycle": {
@@ -77,13 +83,19 @@
     },
     "model_formats": {
       "directories": true,
-      "directory_markers": ["config.json", "freetoken_weight.json"],
+      "directory_markers": [
+        "config.json",
+        "freetoken_weight.json"
+      ],
       "hf_repo_ids": true,
       "files": []
     },
     "startup_timeout_secs": 1800,
     "requires": {
-      "os": ["linux", "windows"],
+      "os": [
+        "linux",
+        "windows"
+      ],
       "gpu": "nvidia",
       "min_ram_gb": 32,
       "note": "Le moteur tourne sous Linux x86_64 avec un GPU NVIDIA, pilote r580+ et CUDA 13. Sous Windows il passe par WSL2 : installez une distribution et le toolkit CUDA à l'intérieur, puis utilisez l'outil « freetoken_status » pour vérifier ce qui manque."
@@ -122,7 +134,13 @@
             "id": "moe_backend",
             "type": "select",
             "label": "Répartition des experts",
-            "options": ["auto", "offload", "hybrid", "cpu", "fused"],
+            "options": [
+              "auto",
+              "offload",
+              "hybrid",
+              "cpu",
+              "fused"
+            ],
             "default": "auto",
             "hint": "auto suit le profil mesuré par « freetoken_bench_bandwidth ». offload garde les experts en mémoire système, cpu les calcule sur le processeur, fused exige de les faire tenir en VRAM."
           },
