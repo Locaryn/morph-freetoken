@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "refreshUrl": "https://raw.githubusercontent.com/Locaryn/plugin-freetoken/main/dist/marketplace.json",
+  "refreshUrl": "https://raw.githubusercontent.com/Locaryn/morph-freetoken/main/dist/marketplace.json",
   "owns": [
     "deepseek-v4",
     "glm-5.2",

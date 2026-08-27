@@ -1,4 +1,4 @@
-# plugin-freetoken
+# morph-freetoken
 
 Extension Locaryn qui apporte **FreeToken** comme moteur d'inférence : un
 serveur local taillé pour les modèles **Mixture-of-Experts** dont les poids
@@ -53,7 +53,7 @@ l'intérieur* — le pilote, lui, s'installe côté Windows. L'outil
 Réglages → Extensions → Ajouter, puis :
 
 ```
-github:Locaryn/plugin-freetoken@v1.0.0
+github:Locaryn/morph-freetoken@v1.0.0
 ```
 
 L'extension arrive désactivée. Accordez-lui ses permissions, activez-la, puis :

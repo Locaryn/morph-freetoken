@@ -52,7 +52,7 @@ async fn handle_request(requete: Value) -> Value {
             json!({
                 "protocolVersion": "2025-06-18",
                 "capabilities": { "tools": {} },
-                "serverInfo": { "name": "plugin-freetoken", "version": VERSION }
+                "serverInfo": { "name": "morph-freetoken", "version": VERSION }
             }),
         ),
         "tools/list" => success(id, tools_list()),
