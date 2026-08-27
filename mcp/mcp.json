@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "freetoken": {
-      "command": "${LOCARYN_PLUGIN_ROOT}/bin/locaryn-freetoken-mcp",
+      "command": "${LOCARYN_MORPH_ROOT}/bin/locaryn-freetoken-mcp",
       "args": [],
       "env": {
         "RUST_LOG": "warn"
