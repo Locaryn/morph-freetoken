@@ -8,7 +8,7 @@
 import { readFileSync } from "node:fs";
 
 const catalogue = JSON.parse(readFileSync(new URL("../dist/marketplace.json", import.meta.url)));
-const manifeste = JSON.parse(readFileSync(new URL("../plugin.json", import.meta.url)));
+const manifeste = JSON.parse(readFileSync(new URL("../morph.json", import.meta.url)));
 
 let erreurs = 0;
 const fail = (message) => {
