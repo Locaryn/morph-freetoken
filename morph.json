@@ -2,7 +2,7 @@
   "$schema": "https://locaryn.dev/schema/morph.json/v0.1",
   "apiVersion": "0.1",
   "name": "morph-freetoken",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Moteur d'inférence FreeToken : sert localement des modèles Mixture-of-Experts de grande taille en répartissant les experts entre la mémoire système et le GPU.",
   "author": "Locaryn Team",
   "license": "Apache-2.0",
