@@ -13,7 +13,7 @@ de milliards de paramètres sur une machine dotée d'un seul GPU grand public.
 
 Le moteur exige **Linux x86_64**, un **GPU NVIDIA** avec pilote **r580+** et le
 **toolkit CUDA 13** (il compile ses noyaux au premier usage). Sous Windows, il
-tourne dans **WSL2** ; l'extension s'en occupe et traduit les chemins.
+tourne dans **WSL2** ; le morph s'en occupe et traduit les chemins.
 
 ## Ce qui appartient au socle, et ce qui appartient à ces outils
 
