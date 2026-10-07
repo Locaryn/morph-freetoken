@@ -1,6 +1,6 @@
 # morph-freetoken
 
-Extension Locaryn qui apporte **FreeToken** comme moteur d'inférence : un
+Morph Locaryn qui apporte **FreeToken** comme moteur d'inférence : un
 serveur local taillé pour les modèles **Mixture-of-Experts** dont les poids
 dépassent la mémoire de la carte graphique.
 
@@ -10,12 +10,12 @@ faire tourner un modèle de plusieurs centaines de milliards de paramètres sur 
 machine à un seul GPU grand public.
 
 FreeToken est un projet de [FlashML](https://github.com/FlashML-org/FreeToken),
-sous licence Apache-2.0. Cette extension ne le redistribue pas : elle l'installe
+sous licence Apache-2.0. Ce morph ne le redistribue pas : il l'installe
 depuis PyPI, à une version épinglée, et le pilote.
 
 ---
 
-## Ce que l'extension apporte
+## Ce que le morph apporte
 
 | | |
 |---|---|
@@ -27,7 +27,7 @@ depuis PyPI, à une version épinglée, et le pilote.
 L'application n'apprend rien de FreeToken : elle lit la section `engine` du
 manifeste — comment installer, comment lancer, comment sonder, quels formats de
 poids sont servis. Tout ce qui est propre au moteur, y compris le passage par
-WSL2 sous Windows, vit dans le programme que cette extension livre.
+WSL2 sous Windows, vit dans le programme que ce morph livre.
 
 ---
 
@@ -41,7 +41,7 @@ WSL2 sous Windows, vit dans le programme que cette extension livre.
   gigaoctets ; les modèles de plus de 100 milliards de paramètres en demandent
   plusieurs centaines.
 
-**Sous Windows**, il n'existe pas de version native : l'extension passe par
+**Sous Windows**, il n'existe pas de version native : le morph passe par
 **WSL2**. Installez une distribution (`wsl --install`) et le toolkit CUDA *à
 l'intérieur* — le pilote, lui, s'installe côté Windows. L'outil
 `freetoken_status` dit exactement ce qui manque, avec la commande qui le répare.
@@ -50,17 +50,17 @@ l'intérieur* — le pilote, lui, s'installe côté Windows. L'outil
 
 ## Installation
 
-Réglages → Extensions → Ajouter, puis :
+Réglages → Morphs → Ajouter, puis :
 
 ```
 github:Locaryn/morph-freetoken@v1.0.0
 ```
 
-L'extension arrive désactivée. Accordez-lui ses permissions, activez-la, puis :
+Le morph arrive désactivé. Accordez-lui ses permissions, activez-le, puis :
 
 1. Lancez l'outil `freetoken_status` depuis le chat — il liste ce qui manque.
 2. `freetoken_install` pose le moteur dans un environnement dédié à
-   l'extension (plusieurs minutes, plusieurs gigaoctets).
+   le morph (plusieurs minutes, plusieurs gigaoctets).
 3. `freetoken_bench_bandwidth`, une fois par machine : le moteur choisira
    ensuite tout seul comment répartir les experts.
 4. Catalogue de modèles → filtre « Mixture-of-Experts » → installez un
@@ -118,7 +118,7 @@ Les deux exécutables produits vont dans `bin/` :
 - `locaryn-freetoken-mcp` — le serveur MCP des outils.
 
 `bin/` est ignoré par Git : l'archive des sources d'un dépôt GitHub ne le
-contient donc pas, et une extension installée depuis les sources s'active,
+contient donc pas, et un morph installé depuis les sources s'active,
 s'affiche et ne fait rien. La CI compile par plateforme et publie une archive
 nommée avec l'OS et l'architecture ; l'application cherche ce paquet en premier.
 
